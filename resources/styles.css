@@ -1,0 +1,40 @@
+.background {
+  viewport-fill: fb-cyan;
+}
+#demotext {
+  fill: black;
+  font-size: 32;
+  font-family: System-Regular;
+  font-weight: bold;
+  text-anchor: middle;
+  text-length: 99;
+}
+
+.sensor-data {
+  font-family: System-Light;
+  fill: yellow;
+  text-anchor: middle;
+  text-length: 32;
+}
+
+.time-data {
+  font-family: System-Light;
+  fill: yellow;
+  text-anchor: middle;
+  text-length: 32;
+  visibility: hidden;
+/*   font-size: 120; */
+}
+
+.mainClock {
+  font-size: 80;
+  font-family: System-Light;
+  fill: yellow;
+  text-anchor: middle;
+  text-length: 32;
+  
+}
+
+.dot {
+  visibility: hidden;
+}
