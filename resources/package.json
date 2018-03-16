@@ -1,0 +1,19 @@
+{
+  "fitbit": {
+    "appUUID": "f9ee0897-e3b0-4cdd-a161-95d31ab866a4",
+    "appType": "clockface",
+    "appDisplayName": "Climbing clock",
+    "iconFile": "resources/icon.png",
+    "wipeColor": "#8bc34a",
+    "requestedPermissions": [
+      "access_location",
+      "access_internet",
+      "run_background"
+    ],
+    "i18n": {
+      "en": {
+        "name": "Climbing clock"
+      }
+    }
+  }
+}
