@@ -42,16 +42,16 @@ function updateClock() {
 clock.ontick = () => updateClock();
 
 ///////////////////////FIRST STAB MAKE ALTITUDE///////////////////////////////
-try {
-  let stats = fs.statSync('altitude.txt');
-}
-catch (e) {
-  let altitudeLog = [];
-  for (let i = 0; i < 51; ++i) {
-    altitudeLog[i] = '125';
-  };
-  fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
-}
+// try {
+//   let stats = fs.statSync('altitude.txt');
+// }
+// catch (e) {
+//   let altitudeLog = [125];
+//   // for (let i = 0; i < 49; ++i) {
+//   //   altitudeLog[i] = '125';
+//   // };
+//   fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
+// }
 
 ////////////////////////BUTTONS//////////////////////////////
 var myTimer;
@@ -77,7 +77,8 @@ let btnAlt = document.getElementById("btn-br");
 btnAlt.onactivate = function(evt) {
   clearDisplay();
   easyAlt();
-  myTimer = setInterval(fsAlt, 300000);
+  fsAlt();
+  myTimer = setInterval(fsAlt, 60000);
 };
 
 let btnTime = document.getElementById("btn-bl");
@@ -85,53 +86,53 @@ btnTime.onactivate = function(evt) {
   clearForClock();
 };
 /////////////////////ALTITUDE//////////////////////////////
-function refreshAlt() {
-  var altitude = (1-((bar.pressure/100)/1013.25)**0.190284)*145366.45;
-  // displayData0.text = `${Math.round(altitude)} feet`;
-  displayData0.text = ``;
-  displayData1.text = ``;
-  displayData2.text = ``;
-  label.text = `${Math.round(altitude)} feet`;
-  altitudeCollection.push(Math.round(altitude));
-  let altitudeLog = altGraph(altitudeCollection);
-  console.log('crunched version: ' + altitudeLog);
-  let x = (altitudeLog.length * 2) + 72;
-  let y = altitudeLog[altitudeLog.length-1];
-  // dot.cx = (altitudeLog.length * 2) + 72;
-  // dot.cy = altitudeLog[altitudeLog.length-1];
-  // console.log('x, y: ' + x + ' ' + y)
-};
+// function refreshAlt() {
+//   var altitude = (1-((bar.pressure/100)/1013.25)**0.190284)*145366.45;
+//   // displayData0.text = `${Math.round(altitude)} feet`;
+//   displayData0.text = ``;
+//   displayData1.text = ``;
+//   displayData2.text = ``;
+//   label.text = `${Math.round(altitude)} feet`;
+//   altitudeCollection.push(Math.round(altitude));
+//   let altitudeLog = altGraph(altitudeCollection);
+//   console.log('crunched version: ' + altitudeLog);
+//   let x = (altitudeLog.length * 2) + 72;
+//   let y = altitudeLog[altitudeLog.length-1];
+//   // dot.cx = (altitudeLog.length * 2) + 72;
+//   // dot.cy = altitudeLog[altitudeLog.length-1];
+//   // console.log('x, y: ' + x + ' ' + y)
+// };
 
-function testAlt() {
-  let k = 0;
-  let altitudeLog = [125];
-  for (let i=0; i<50;i++) {
-    altitudeLog.push(i+altitudeLog[0]+1);
-  };
-  // for (let i=0;i<51;i++) {
-  //   let y = Math.floor(Math.random()*112)+69;
-  //   alitutudeLog.push(y);
-  // };
-  dots.forEach(function(dot) {
-    dot.style.visibility = "visible";
-    // console.log(k);
-    dot.cy = altitudeLog[k];
-    k++;
-  });
-}
+// function testAlt() {
+//   let k = 0;
+//   let altitudeLog = [125];
+//   for (let i=0; i<50;i++) {
+//     altitudeLog.push(i+altitudeLog[0]+1);
+//   };
+//   // for (let i=0;i<51;i++) {
+//   //   let y = Math.floor(Math.random()*112)+69;
+//   //   alitutudeLog.push(y);
+//   // };
+//   dots.forEach(function(dot) {
+//     dot.style.visibility = "visible";
+//     // console.log(k);
+//     dot.cy = altitudeLog[k];
+//     k++;
+//   });
+// }
 
-function doubleTestAlt() {
-  try {
-    let stats = fs.statSync('altitude.txt');
-    console.log('ok... testing...');
-    console.log("File size: " + stats.size + " bytes");
-    let altitudeLog = JSON.parse(fs.readFileSync('altitude.txt', 'utf-8'));
-    console.log('this is what I got!', altitudeLog[0])
-  }
-  catch (e) {
-    console.log('jokes on you! Ha! :,(');
-  }
-}
+// function doubleTestAlt() {
+//   try {
+//     let stats = fs.statSync('altitude.txt');
+//     console.log('ok... testing...');
+//     console.log("File size: " + stats.size + " bytes");
+//     let altitudeLog = JSON.parse(fs.readFileSync('altitude.txt', 'utf-8'));
+//     console.log('this is what I got!', altitudeLog[0])
+//   }
+//   catch (e) {
+//     console.log('jokes on you! Ha! :,(');
+//   }
+// }
 
 function easyAlt() {
   dots.forEach(function(dot) {
@@ -146,19 +147,44 @@ function easyAlt() {
 
 function fsAlt() {
   let altitude = Math.round((1-((bar.pressure/100)/1013.25)**0.190284)*145366.45);
-  let altitudeLog = JSON.parse(fs.readFileSync('altitude.txt', 'utf-8'));
-  console.log(altitudeLog);
-  altitudeLog.shift();
-  altitudeLog.push(altitude);
+  try {
+    let altitudeLog = JSON.parse(fs.readFileSync('altitude.txt', 'utf-8'));
+    // console.log(altitudeLog);
+    if (altitudeLog.length == 0){
+        altitudeLog = [altitude]
+    } else if (altitudeLog.length < 51) {
+      altitudeLog.push(altitude);
+    } else {
+      altitudeLog.shift();
+      altitudeLog.push(altitude);
+    }
+    fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
+    console.log(altitudeLog.length)
+    // for (let i=0; i < altitudeLog.length)
+    
+    } catch (e) {
+    let altitudeLog = [altitude];
+    fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
+  }
   let k = 0;
-  console.log(typeof altitudeLog[0]);
-  console.log('at [0] we have: ' + altitudeLog[0]);
-  dots.forEach(function(dot) {
-    console.log(typeof altitudeLog[k]);
-    dot.cy = parseInt(altitudeLog[k]);
-    k++;
-  });
-  fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
+  for (let i = 0; i < altitudeLog.length; i++) {
+    dots[i].cy = parseInt(altitudeLog[i])
+  }
+  // try {
+  // dots.forEach(function(dot) {
+  //     // console.log(typeof altitudeLog[k]);
+  //   // if (k > altitudeLog.length) {
+  //   //   return false
+  //   //   console.log('too short so I trued it')
+  //   // }
+  //   // try {
+  //     dot.cy = parseInt(altitudeLog[k]);
+  //     k++;
+  // });
+  // } catch(e) {
+  //   // console.log('cant move, not long enough')
+  // }
+    // });
 };
 /////////////////WEATHER///////////////////////////////////////////
 function refreshWeather(forecast) {
