@@ -42,16 +42,34 @@ function updateClock() {
 clock.ontick = () => updateClock();
 
 ///////////////////////FIRST STAB MAKE ALTITUDE///////////////////////////////
-// try {
-//   let stats = fs.statSync('altitude.txt');
-// }
-// catch (e) {
-//   let altitudeLog = [125];
-//   // for (let i = 0; i < 49; ++i) {
-//   //   altitudeLog[i] = '125';
-//   // };
-//   fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
-// }
+function backgroundAlt() {
+  let altitude = Math.round((1-((bar.pressure/100)/1013.25)**0.190284)*145366.45);
+  // label.text = `est. ${Math.round(altitude)} feet`;
+  try {
+    let altitudeLog = JSON.parse(fs.readFileSync('altitude.txt', 'utf-8'));
+    if (altitudeLog.length == 0){
+        altitudeLog = [altitude]
+    } else if (altitudeLog.length < 51) {
+      altitudeLog.push(altitude);
+    } else {
+      altitudeLog.shift();
+      altitudeLog.push(altitude);
+    }
+    fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
+    console.log(altitudeLog.length)
+  } catch (e) {
+    let altitudeLog = [altitude];
+    fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
+  }
+  // let altitudeOut = lineArt(altitudeLog)
+  // // console.log(altitudeOut.length)
+  // for (let i = 0; i < altitudeLog.length; i++) {
+  //   // console.log(altitudeOut[i])
+  //   dots[i].cy = altitudeOut[i]
+  // }
+};
+
+let backgroundTimer = setInterval(backgroundAlt, 60000)
 
 ////////////////////////BUTTONS//////////////////////////////
 var myTimer;
@@ -103,15 +121,15 @@ function fsAlt() {
   label.text = `est. ${Math.round(altitude)} feet`;
   try {
     let altitudeLog = JSON.parse(fs.readFileSync('altitude.txt', 'utf-8'));
-    if (altitudeLog.length == 0){
-        altitudeLog = [altitude]
-    } else if (altitudeLog.length < 51) {
-      altitudeLog.push(altitude);
-    } else {
-      altitudeLog.shift();
-      altitudeLog.push(altitude);
-    }
-    fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
+    // if (altitudeLog.length == 0){
+    //     altitudeLog = [altitude]
+    // } else if (altitudeLog.length < 51) {
+    //   altitudeLog.push(altitude);
+    // } else {
+    //   altitudeLog.shift();
+    //   altitudeLog.push(altitude);
+    // }
+    // fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
     console.log(altitudeLog.length)
   } catch (e) {
     let altitudeLog = [altitude];
@@ -124,6 +142,7 @@ function fsAlt() {
     dots[i].cy = altitudeOut[i]
   }
 };
+
 
 function lineArt(altitudeIn) {
   console.log(altitudeIn)
