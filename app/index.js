@@ -130,7 +130,7 @@ function fsAlt() {
     //   altitudeLog.push(altitude);
     // }
     // fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
-    console.log(altitudeLog.length)
+    // console.log(altitudeLog.length)
   } catch (e) {
     let altitudeLog = [altitude];
     fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
@@ -145,11 +145,11 @@ function fsAlt() {
 
 
 function lineArt(altitudeIn) {
-  console.log(altitudeIn)
+  // console.log(altitudeIn)
   // console.log(Math.max(...altitudeIn))
   // console.log(Math.min(...altitudeIn))
   let scale = Math.ceil((Math.max(...altitudeIn) - Math.min(...altitudeIn))/100)
-  console.log(scale)
+  // console.log(scale)
   if (scale == 0) {scale++}
   let delt = []
   for (let i = 0; i < altitudeIn.length; i++) {
@@ -158,10 +158,10 @@ function lineArt(altitudeIn) {
     //   console.log('found it' + delt[i])
     // } else {
     delt[i] = 125 + Math.round((altitudeIn[0] - altitudeIn[i])/scale)
-      console.log(delt[i])
+      // console.log(delt[i])
     // }
   }
-  console.log(delt)
+  // console.log(delt)
   return delt
 }
 /////////////////WEATHER///////////////////////////////////////////
