@@ -3,96 +3,101 @@
 
   <gradientRect width="100%" height="100%"
     gradient-type="linear"
-    gradient-x1="0" gradient-y1="50"
-    gradient-x2="0" gradient-y2="100%-50"
-    gradient-color1="#161A1F" gradient-color2="#162d49" />
-    <!-- TOP LEFT Loc-->
-  <use id="btn-tl" href="#combo-button-upper-left" fill="#808000">
-    <set href="combo-button-icon" attributeName="href" to="loc_line.png"/>
+    gradient-x1="0" gradient-y1="0"
+    gradient-x2="100%" gradient-y2="100%"
+    gradient-color1="#161A1F" gradient-color2="#495869" />
+    <!-- TOP LEFT GPS-->
+  <use id="btn-tl" href="#combo-button-upper-left" fill="#CD853F">
+    <set href="combo-button-icon" attributeName="href" to="loc_full.png"/>
     <set href="combo-button-icon-press" attributeName="href" to="loc_full.png"/>
-    <set href="combo-button-stroke" attributeName="display" to="inline"/>
+<!--     <set href="combo-button-stroke" attributeName="display" to="inline"/> -->
   </use>
-  <!-- TOP RIGHT Step-->
-  <use id="btn-tr" href="#combo-button-upper-right" fill="#B8860B">
-    <set href="combo-button-icon" attributeName="href" to="boot_open.png"/>
+  <!-- TOP RIGHT weather-->
+  <use id="btn-tr" href="#combo-button-upper-right" fill="#CD853F">
+    <set href="combo-button-icon" attributeName="href" to="cloud_full.png"/>
     <set href="combo-button-icon-press" attributeName="href" to="boot_full.png"/>
-    <set href="combo-button-stroke" attributeName="display" to="inline"/>
+<!--     <set href="combo-button-stroke" attributeName="display" to="inline"/> -->
   </use>
     <!-- BOTTOM RIGHT Alt-->
-  <use id="btn-br" href="#combo-button-lower-right" fill="#6B8E23">
-    <set href="combo-button-icon" attributeName="href" to="k2_line.png"/>
-    <set href="combo-button-icon-press" attributeName="href" to="k2_full.png"/>
-    <set href="combo-button-stroke" attributeName="display" to="inline"/>
+  <use id="btn-br" href="#combo-button-lower-right" fill="#CD853F">
+    <set href="combo-button-icon" attributeName="href" to="g1_full.png"/>
+    <set href="combo-button-icon-press" attributeName="href" to="g1_full.png"/>
+<!--     <set href="combo-button-stroke" attributeName="display" to="inline"/> -->
   </use>
   <!-- BOTTOM LEFT CLOCK-->
   <use id="btn-bl" href="#combo-button-lower-left" fill="#CD853F">
-    <set href="combo-button-icon" attributeName="href" to="heart_line.png"/>
-    <set href="combo-button-icon-press" attributeName="href" to="heart_full.png"/>
+    <set href="combo-button-icon" attributeName="href" to="clock_line.png"/>
+    <set href="combo-button-icon-press" attributeName="href" to="clock_line.png"/>
 <!--     <set href="combo-button-stroke" attributeName="display" to="inline"/> -->
   </use>
   
   <text id="display-data-0" class="sensor-data" x="50%" y="100"></text>
   <text id="display-data-1" class="sensor-data" x="50%" y="130" font-size="24"></text>
   <text id="display-data-2" class="sensor-data" x="50%" y="160" font-size="24"></text>
-  <text id="smallClock" class="time-data" x="50%" y="25">{ ... }</text>
-  <text id="mainClock" class="mainClock" x="50%" y="150">{ ... }</text>
-  <text id="data-label" class="time-data" visibility='visible' x="50%" y="240"></text>
+  <text id="smallClock" class="time-data" x="50%" y="30" font-family="Fabrikat">{ ... }</text>
+  <text id="timeM" class="mainClock" x="80%" y="130"></text>
+<!--   <text id="hourM" class="mainClock" x="50%" y="120"></text> -->
+<!--   <text id="minuteM" class="mainClock" x="50%" y="150"></text> -->
+  <text id="secondM" class="mainClock" x="80%" y="190"></text>
+  <text id="data-label" class="time-data" visibility='visible' x="50%" y="95%"></text>
   
 <!--   <rect x="0" y="0" width="73" height="69" fill="red" opacity="0.7"/>
   <rect x="0" y="176" width="73" height="74" fill="red" opacity="0.7"/>
   <rect x="272" y="0" width="76" height="69" fill="red" opacity="0.7"/>
   <rect x="272" y="181" width="76" height="69" fill="red" opacity="0.7"/> -->
-    <circle cx="74" cy="125" r="3" fill="red" id="dot0" class="dot"/>
-    <circle cx="78" cy="125" r="3" fill="red" id="dot1" class="dot"/>
-    <circle cx="82" cy="125" r="3" fill="red" id="dot2" class="dot"/>
-    <circle cx="86" cy="125" r="3" fill="red" id="dot3" class="dot"/>
-    <circle cx="90" cy="125" r="3" fill="red" id="dot4" class="dot"/>
-    <circle cx="94" cy="125" r="3" fill="red" id="dot5" class="dot"/>
-    <circle cx="98" cy="125" r="3" fill="red" id="dot6" class="dot"/>
-    <circle cx="102" cy="125" r="3" fill="red" id="dot7" class="dot"/>
-    <circle cx="106" cy="125" r="3" fill="red" id="dot8" class="dot"/>
-    <circle cx="110" cy="125" r="3" fill="red" id="dot9" class="dot"/>
-    <circle cx="114" cy="125" r="3" fill="red" id="dot10" class="dot"/>
-    <circle cx="118" cy="125" r="3" fill="red" id="dot11" class="dot"/>
-    <circle cx="122" cy="125" r="3" fill="red" id="dot12" class="dot"/>
-    <circle cx="126" cy="125" r="3" fill="red" id="dot13" class="dot"/>
-    <circle cx="130" cy="125" r="3" fill="red" id="dot14" class="dot"/>
-    <circle cx="134" cy="125" r="3" fill="red" id="dot15" class="dot"/>
-    <circle cx="138" cy="125" r="3" fill="red" id="dot16" class="dot"/>
-    <circle cx="142" cy="125" r="3" fill="red" id="dot17" class="dot"/>
-    <circle cx="146" cy="125" r="3" fill="red" id="dot18" class="dot"/>
-    <circle cx="150" cy="125" r="3" fill="red" id="dot19" class="dot"/>
-    <circle cx="154" cy="125" r="3" fill="red" id="dot20" class="dot"/>
-    <circle cx="158" cy="125" r="3" fill="red" id="dot21" class="dot"/>
-    <circle cx="162" cy="125" r="3" fill="red" id="dot22" class="dot"/>
-    <circle cx="166" cy="125" r="3" fill="red" id="dot23" class="dot"/>
-    <circle cx="170" cy="125" r="3" fill="red" id="dot24" class="dot"/>
-    <circle cx="174" cy="125" r="3" fill="red" id="dot25" class="dot"/>
-    <circle cx="178" cy="125" r="3" fill="red" id="dot26" class="dot"/>
-    <circle cx="182" cy="125" r="3" fill="red" id="dot27" class="dot"/>
-    <circle cx="186" cy="125" r="3" fill="red" id="dot28" class="dot"/>
-    <circle cx="190" cy="125" r="3" fill="red" id="dot29" class="dot"/>
-    <circle cx="194" cy="125" r="3" fill="red" id="dot30" class="dot"/>
-    <circle cx="198" cy="125" r="3" fill="red" id="dot31" class="dot"/>
-    <circle cx="202" cy="125" r="3" fill="red" id="dot32" class="dot"/>
-    <circle cx="206" cy="125" r="3" fill="red" id="dot33" class="dot"/>
-    <circle cx="210" cy="125" r="3" fill="red" id="dot34" class="dot"/>
-    <circle cx="214" cy="125" r="3" fill="red" id="dot35" class="dot"/>
-    <circle cx="218" cy="125" r="3" fill="red" id="dot36" class="dot"/>
-    <circle cx="222" cy="125" r="3" fill="red" id="dot37" class="dot"/>
-    <circle cx="226" cy="125" r="3" fill="red" id="dot38" class="dot"/>
-    <circle cx="230" cy="125" r="3" fill="red" id="dot39" class="dot"/>
-    <circle cx="234" cy="125" r="3" fill="red" id="dot40" class="dot"/>
-    <circle cx="238" cy="125" r="3" fill="red" id="dot41" class="dot"/>
-    <circle cx="242" cy="125" r="3" fill="red" id="dot42" class="dot"/>
-    <circle cx="246" cy="125" r="3" fill="red" id="dot43" class="dot"/>
-    <circle cx="250" cy="125" r="3" fill="red" id="dot44" class="dot"/>
-    <circle cx="254" cy="125" r="3" fill="red" id="dot45" class="dot"/>
-    <circle cx="258" cy="125" r="3" fill="red" id="dot46" class="dot"/>
-    <circle cx="262" cy="125" r="3" fill="red" id="dot47" class="dot"/>
-    <circle cx="266" cy="125" r="3" fill="red" id="dot48" class="dot"/>
-    <circle cx="270" cy="125" r="3" fill="red" id="dot49" class="dot"/>
-    <circle cx="274" cy="125" r="3" fill="red" id="dot50" class="dot"/>
+  <g id="circles">
+    <circle cx="74" cy="125" r="3" id="dot0" class="dot"/>
+    <circle cx="78" cy="125" r="3" id="dot1" class="dot"/>
+    <circle cx="82" cy="125" r="3" id="dot2" class="dot"/>
+    <circle cx="86" cy="125" r="3" id="dot3" class="dot"/>
+    <circle cx="90" cy="125" r="3" id="dot4" class="dot"/>
+    <circle cx="94" cy="125" r="3" id="dot5" class="dot"/>
+    <circle cx="98" cy="125" r="3" id="dot6" class="dot"/>
+    <circle cx="102" cy="125" r="3" id="dot7" class="dot"/>
+    <circle cx="106" cy="125" r="3" id="dot8" class="dot"/>
+    <circle cx="110" cy="125" r="3" id="dot9" class="dot"/>
+    <circle cx="114" cy="125" r="3" id="dot10" class="dot"/>
+    <circle cx="118" cy="125" r="3" id="dot11" class="dot"/>
+    <circle cx="122" cy="125" r="3" id="dot12" class="dot"/>
+    <circle cx="126" cy="125" r="3" id="dot13" class="dot"/>
+    <circle cx="130" cy="125" r="3" id="dot14" class="dot"/>
+    <circle cx="134" cy="125" r="3" id="dot15" class="dot"/>
+    <circle cx="138" cy="125" r="3" id="dot16" class="dot"/>
+    <circle cx="142" cy="125" r="3" id="dot17" class="dot"/>
+    <circle cx="146" cy="125" r="3" id="dot18" class="dot"/>
+    <circle cx="150" cy="125" r="3" id="dot19" class="dot"/>
+    <circle cx="154" cy="125" r="3" id="dot20" class="dot"/>
+    <circle cx="158" cy="125" r="3" id="dot21" class="dot"/>
+    <circle cx="162" cy="125" r="3" id="dot22" class="dot"/>
+    <circle cx="166" cy="125" r="3" id="dot23" class="dot"/>
+    <circle cx="170" cy="125" r="3" id="dot24" class="dot"/>
+    <circle cx="174" cy="125" r="3" id="dot25" class="dot"/>
+    <circle cx="178" cy="125" r="3" id="dot26" class="dot"/>
+    <circle cx="182" cy="125" r="3" id="dot27" class="dot"/>
+    <circle cx="186" cy="125" r="3" id="dot28" class="dot"/>
+    <circle cx="190" cy="125" r="3" id="dot29" class="dot"/>
+    <circle cx="194" cy="125" r="3" id="dot30" class="dot"/>
+    <circle cx="198" cy="125" r="3" id="dot31" class="dot"/>
+    <circle cx="202" cy="125" r="3" id="dot32" class="dot"/>
+    <circle cx="206" cy="125" r="3" id="dot33" class="dot"/>
+    <circle cx="210" cy="125" r="3" id="dot34" class="dot"/>
+    <circle cx="214" cy="125" r="3" id="dot35" class="dot"/>
+    <circle cx="218" cy="125" r="3" id="dot36" class="dot"/>
+    <circle cx="222" cy="125" r="3" id="dot37" class="dot"/>
+    <circle cx="226" cy="125" r="3" id="dot38" class="dot"/>
+    <circle cx="230" cy="125" r="3" id="dot39" class="dot"/>
+    <circle cx="234" cy="125" r="3" id="dot40" class="dot"/>
+    <circle cx="238" cy="125" r="3" id="dot41" class="dot"/>
+    <circle cx="242" cy="125" r="3" id="dot42" class="dot"/>
+    <circle cx="246" cy="125" r="3" id="dot43" class="dot"/>
+    <circle cx="250" cy="125" r="3" id="dot44" class="dot"/>
+    <circle cx="254" cy="125" r="3" id="dot45" class="dot"/>
+    <circle cx="258" cy="125" r="3" id="dot46" class="dot"/>
+    <circle cx="262" cy="125" r="3" id="dot47" class="dot"/>
+    <circle cx="266" cy="125" r="3" id="dot48" class="dot"/>
+    <circle cx="270" cy="125" r="3" id="dot49" class="dot"/>
+    <circle cx="274" cy="125" r="3" id="dot50" class="dot"/>
+  </g>
       
 
 </svg>

@@ -1,6 +1,6 @@
-.background {
+/* .background {
   viewport-fill: fb-cyan;
-}
+} */
 #demotext {
   fill: black;
   font-size: 32;
@@ -21,20 +21,21 @@
   font-family: System-Light;
   fill: yellow;
   text-anchor: middle;
-  text-length: 32;
+  text-length: 16;
   visibility: hidden;
-/*   font-size: 120; */
+/*   font-size: 20; */
 }
 
 .mainClock {
   font-size: 80;
-  font-family: System-Light;
+  font-family: Fabrikat;
   fill: yellow;
-  text-anchor: middle;
-  text-length: 32;
-  
+  text-anchor: end;
+  text-length: 20;
 }
 
 .dot {
   visibility: hidden;
+/*   fill: #808000; */
+  fill: #dcdcdc;
 }
