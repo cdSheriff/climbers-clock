@@ -1,326 +1,173 @@
+////////////////////// SETUP ////////////////////
+// import all the crap I need
+import * as messaging from "messaging";
 import clock from "clock";
 import document from "document";
-import {inbox} from "file-transfer";
+import { inbox } from "file-transfer";
 import * as fs from "fs";
+import { me as device } from "device";
 
-import {zeroPad} from "../common/utils";
-import {hourMe} from "../common/utils";
-import {altFlash} from "../common/utils";
-import {altGraph} from "../common/utils";
+// text (time, day/date, am/pm, countdown)
+let countdownText = document.getElementById('countdown');
+let myLabel = document.getElementById("myLabel");
+let dayed = document.getElementById("dayed");
+let side = document.getElementById('side');
 
-import { me as device } from "device"
-import {Barometer} from "barometer";
-import { geolocation, Position, PositionError } from "geolocation";
+// graphics (line, arc fills, fishies)
+var fishTime = document.getElementById("fishTime");
+var tideLine = document.getElementById("tideLine");
+var highTide = document.getElementById("highTide");
+var lowTide = document.getElementById("lowTide");
 
-///////////////////////DISPLAY ITEMS////////////////////////////
-let smallClock = document.getElementById("smallClock");
-let timeM = document.getElementById("timeM");
-// let hourM = document.getElementById("hourM");
-// let minuteM = document.getElementById("minuteM");
-let secondM = document.getElementById("secondM");
-let displayData0 = document.getElementById("display-data-0");
-let displayData1 = document.getElementById("display-data-1");
-let displayData2 = document.getElementById("display-data-2");
-let label = document.getElementById("data-label");
-let circles = document.getElementById("circles");
-let mainClock = document.getElementsByClassName("mainClock");
-let dots = document.getElementsByClassName("dot");
-let displays = document.getElementsByClassName("sensor-data");
+// adjust fishie position for meson
+if (device.modelName == 'Versa') {fishTime.x = -24}
 
-/////////////////////CLOCK//////////////////////////////
-clock.granularity = "seconds";
-function updateClock() {
-  let today = new Date();
-  let date = zeroPad(today.getDate());
-  let hours = hourMe(today.getHours())[1];
-  // side.text = `${hourMe(today.getHours())[0]}`
-  let mins = zeroPad(today.getMinutes());
-  let seconds = zeroPad(today.getSeconds());
-  // let days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  // let day = days[today.getDay()];
-  smallClock.text = `${hours}:${mins}:${seconds}`;
-  timeM.text = `${hours}:${mins}`;
-  // hourM.text = `${hours}`;
-  // minuteM.text = `${mins}`;
-  secondM.text = `${seconds}`;
-  // dayed.text = `${day}`;
-  // dated.text = `${date}`;
-  // console.log(alt + 'became' + alts);
+// make a global variable for tide predictions (EW)
+let globalTides;
+
+////////////////// CLOCKY BITs /////////////////////////////
+// Update the clock every minute
+clock.granularity = "minutes";
+
+// function for the clocky bit
+function updateClock(today) {
+  // AM/PM
+  side.text = today.getHours() >= 12 ? 'PM' : 'AM';
+  // hours and minutes
+  myLabel.text = `${today.getHours() % 12 || 12}:${zeroPad(today.getMinutes())}`;
+  // day of the week and date
+  dayed.text = `${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][today.getDay()]} ${zeroPad(today.getDate())}`;
 };
-clock.ontick = () => updateClock();
 
-///////////////////////FIRST STAB MAKE ALTITUDE///////////////////////////////
-function backgroundAlt() {
-  let altitude = Math.round((1-((bar.pressure/100)/1013.25)**0.190284)*145366.45);
-  // label.text = `est. ${Math.round(altitude)} feet`;
-  try {
-    let altitudeLog = JSON.parse(fs.readFileSync('altitude.txt', 'utf-8'));
-    if (altitudeLog.length == 0){
-        altitudeLog = [altitude]
-    } else if (altitudeLog.length < 51) {
-      altitudeLog.push(altitude);
+function zeroPad(i) {
+  if (i < 10) {
+    i = "0" + i;
+  }
+  return i;
+}
+
+
+////////////////// GRAPHIC BITS ///////////////////////
+// handles the graphic elements
+function updateGraphics(goodies, today) {
+  if (typeof goodies !== "undefined") {
+    if (goodies[0] <= 90) {
+        fishTime.style.visibility = "visible";
     } else {
-      altitudeLog.shift();
-      altitudeLog.push(altitude);
-    }
-    fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
-    console.log(altitudeLog.length)
-  } catch (e) {
-    let altitudeLog = [altitude];
-    fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
-  }
-  // let altitudeOut = lineArt(altitudeLog)
-  // // console.log(altitudeOut.length)
-  // for (let i = 0; i < altitudeLog.length; i++) {
-  //   // console.log(altitudeOut[i])
-  //   dots[i].cy = altitudeOut[i]
-  // }
+        fishTime.style.visibility = "hidden";
+    };
+
+    // timeleft is minutes/60 (so hours) : minutes minus the hours
+    let timeLeft = Math.floor(goodies[0]/60) + ':' + zeroPad(goodies[0] - (Math.floor(goodies[0]/60) * 60));
+    if (goodies[1] == 'H') {
+      highTide.style.visibility = 'visible';
+      lowTide.style.visibility = 'hidden';
+      countdownText.text = `${timeLeft} to high tide`
+
+    };
+    if (goodies[1] == 'L') {
+      lowTide.style.visibility = 'visible';
+      highTide.style.visibility = 'hidden';
+      countdownText.text = `${timeLeft} to low tide`
+    };
+  } else {
+    console.log('no goodies yet!');
+  };
 };
 
-let backgroundTimer = setInterval(backgroundAlt, 60000)
-
-////////////////////////BUTTONS//////////////////////////////
-var myTimer;
-var forecast;
-let bar = new Barometer();
-bar.start();
-
-let btnLoc = document.getElementById("btn-tl");
-btnLoc.onactivate = function(evt) {
-  clearDisplay();
-  label.text = `location`;
-  // displayData0.text = ``;
-  displayData1.text = `This may take up to a minute`;
-  refreshLoc();
-};
-
-let btnWeather = document.getElementById("btn-tr");
-btnWeather.onactivate = function(evt) {
-  clearDisplay();
-  label.text = `weather`;
-  refreshWeather();
-};
-
-let btnAlt = document.getElementById("btn-br");
-btnAlt.onactivate = function(evt) {
-  btnAlt.style.stroke = 'none'
-  clearDisplay();
-  easyAlt();
-  fsAlt();
-  myTimer = setInterval(fsAlt, 300000);
-};
-
-let btnTime = document.getElementById("btn-bl");
-btnTime.onactivate = function(evt) {
-  clearForClock();
-};
-/////////////////////ALTITUDE//////////////////////////////
-function easyAlt() {
-  dots.forEach(function(dot) {
-    dot.style.visibility = "visible";
-  });
-  // dots.forEach(function(dot) {
-  //   dot.groupTransform.translate.x = 50;
-  // });
-  if (device.modelName == 'Versa') {
-    circles.groupTransform.translate.x = -24
-  }
-  var altitude = (1-((bar.pressure/100)/1013.25)**0.190284)*145366.45;
-  displayData0.text = ``;
-  displayData1.text = ``;
-  displayData2.text = ``;
-  label.text = `${Math.round(altitude)} feet`;
-}
-
-function fsAlt() {
-  let altitude = Math.round((1-((bar.pressure/100)/1013.25)**0.190284)*145366.45);
-  label.text = `${Math.round(altitude)} feet`;
+// master screen control bit
+function updateScreen(globalTides) {
+  var today = new Date()
+  updateClock(today)
   try {
-    let altitudeLog = JSON.parse(fs.readFileSync('altitude.txt', 'utf-8'));
-    // if (altitudeLog.length == 0){
-    //     altitudeLog = [altitude]
-    // } else if (altitudeLog.length < 51) {
-    //   altitudeLog.push(altitude);
-    // } else {
-    //   altitudeLog.shift();
-    //   altitudeLog.push(altitude);
-    // }
-    // fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
-    // console.log(altitudeLog.length)
-  } catch (e) {
-    let altitudeLog = [altitude];
-    fs.writeFileSync("altitude.txt", JSON.stringify(altitudeLog), "utf-8");
+    updateGraphics(countdown(JSON.parse(fs.readFileSync("tides.txt", "utf-8")), today), today)
   }
-  let altitudeOut = lineArt(altitudeLog)
-  // console.log(altitudeOut.length)
-  for (let i = 0; i < altitudeLog.length; i++) {
-    // console.log(altitudeOut[i])
-    dots[i].cy = altitudeOut[i]
+  catch (e) {
+    fetchTides()
   }
 };
 
-
-function lineArt(altitudeIn) {
-  // console.log(altitudeIn)
-  // console.log(Math.max(...altitudeIn))
-  // console.log(Math.min(...altitudeIn))
-  let scale = Math.ceil((Math.max(...altitudeIn) - Math.min(...altitudeIn))/100)
-  // console.log(scale)
-  if (scale == 0) {scale++}
-  if (device.modelName == 'Ionic') {
-    let plotF = 125
-  } else {
-    let plotF = 150
-  }
-  let delt = []
-  for (let i = 0; i < altitudeIn.length; i++) {
-    // if (altitudeIn[i] == 125) {
-    //   delt[i] = 125
-    //   console.log('found it' + delt[i])
-    // } else {
-    delt[i] = plotF + Math.round((altitudeIn[0] - altitudeIn[i])/scale)
-      // console.log(delt[i])
-    // }
-  }
-  // console.log(delt)
-  return delt
-}
-/////////////////WEATHER///////////////////////////////////////////
-function refreshWeather(forecast) {
-  label.text = `weather`;
-  if (forecast) {
-    console.log('forecast exists, gonna put words on screen now')
-    printForecast(forecast);
-  } else {
-    console.log('forecast undefined. going to try things')
-    try {
-      console.log('try to read it...')
-      let ascii_read = fs.readFileSync("sevenDay.txt", "utf-8");
-      if (ascii_read) {
-        console.log('ok local file to forecast');
-        forecast = JSON.parse(ascii_read);
-        console.log('ok parsed it and globaled it, now lets screen it')
-        printForecast(forecast);
-      } else {
-        console.log('nothing was read, didnt make it global');
-        displayData0.text = `no NWS connection`;
-      };
-    }
-    catch (e) {
-      console.log('there was nothing in the file system! ugh (or maybe screening it failed)')
-      displayData0.text = `no NWS connection`;
-    }
-  }
+function countdown(tideChart, today) {
+  // console.log('here is what was passed to util: ' + tideChart)
+  for (var i = 0; i < tideChart.length; i ++) {
+    let offset = today.getTimezoneOffset()
+    let localMinute = Math.floor(today.getTime()/60000);
+    let tideMinute = Math.floor((Date.parse(tideChart[i].slice(0, -1))+(60*offset*1000))/60000);
+    if (localMinute < tideMinute) {
+      let goodies = [tideMinute - localMinute, tideChart[i].substr(-1)];
+      break
+    };
+  };
+  console.log(goodies)
+  return goodies;
 };
 
-function printForecast(forecast) {
-  displayData0.text = `${forecast.name}`;
-  displayData1.text = `${forecast.shortForecast}`;
-  let temp = forecast.shortForecast.split('then');
-  if (temp[1]){
-    displayData2.text = `${temp[1]}`;
-  }
-}
+// Update the clock every tick event
+clock.ontick = () => updateScreen(globalTides);
+// Ask for new data every 24 hours
+setInterval(fetchTides, 24*60*60*1000)
 
+//////////////////////////////////////////////////
+
+console.log("App Started");
+
+
+let quips = ['Tying knots...','Baiting hooks...','Pinching barbs...','Patching waders...','Winding spools...','Telling tales...'];
+var rng = Math.floor(Math.random() * 6);
+countdownText.text = quips[rng];
+
+// Event occurs when new file(s) are received
 inbox.onnewfile = () => {
   console.log("New file!");
+  // sniffFiles()
   let fileName;
   do {
+    // If there is a file, move it from staging into the application folder
     fileName = inbox.nextFile();
-    console.log("found filename: " + fileName)
-    if (fileName) {
+    if (fileName == 'tides.txt') {
       let data = fs.readFileSync(fileName, "utf-8");
-      fs.writeFileSync("sevenDay.txt", data, "utf-8");
-      console.log('ok stored it locally');
+      fs.writeFileSync(fileName, data, "utf-8");
     }
   } while (fileName);
+  // sniffFiles()
+  // parseFiles()
 };
-/////////////////GPS///////////////////////////////////////////
-function refreshLoc() {
-  var gpsOn = true
-  console.log('trying to find me');
-  
-  function locationSuccess(position) {
-    if (displayData1.text == 'This may take up to a minute') {
-      displayData0.text = `lat: ${position.coords.latitude.toFixed(5)}`;
-      displayData1.text = `long: ${position.coords.longitude.toFixed(5)}`;
-      let temp = position.coords.altitude * 3.28084;
-      displayData2.text = `GPS altitude: ${temp.toFixed(0)} feet`;
-      label.text = `${position.coords.altitudeAccuracy}`;
-    } else {
-      console.log('whoops new function')
-    }
-  };
-  
-  function locationError(error) {
-    if (displayData1.text == 'This may take up to a minute') {
-      console.log("Error: " + error.code,
-                "Message: " + error.message);
-      displayData0.text = `location error: ${error.message}`
-      displayData1.text = `hint: GPS hates things overhead`;
-      displayData2.text = `trees, roofs, etc can make it fail`;
-    } else {
-      console.log('whoops new function')
-    }
-  };
-  
-  var geo_options = {
-    timeout: 59000
-  };
-  
-  // console.log(device.modelName);
-  // console.log(device.modelId);
-  if (device.modelName == 'Ionic') {
-    console.log('ionic, finding itself')
-    geolocation.getCurrentPosition(locationSuccess, locationError, geo_options);
-  } else {
-    console.log('Uh oh! This device doesnt have an antenna')
-    displayData1.text = `function unavailable`;
-    displayData2.text = `no onboard GPS antenna`;
+
+
+////////////////// MESSAGING BIT (ASK FOR TIDES) ////////////////
+// Listen for the onopen event
+messaging.peerSocket.onopen = function() {
+  // Fetch weather when the connection opens
+  fetchTides();
+}
+
+// gimme my tides!
+function fetchTides() {
+  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+    // Send a command to the companion
+    messaging.peerSocket.send({
+      command: 'tides'
+    });
   }
-};
-
-
-///////////////////////////RESET/CLEAR//////////////////////////////////////////
-function clearDisplay() {
-  var gpsOn = false
-  clearInterval(myTimer);
-  // dot.style.visibility = "hidden";
-  dots.forEach(function(dot) {
-    dot.style.visibility = "hidden";
-  });
-  displays.forEach(function(display) {
-    display.style.visibility = "visible";
-  });
-  mainClock.forEach(function(display) {
-    display.style.visibility = "hidden";
-  });
-  // mainClock.style.visibility = "hidden";
-  smallClock.style.visibility = "visible";
-  displayData0.text = `...`;
-  displayData1.text = ``;
-  displayData2.text = ``;
-  label.text = ``;
 }
 
-function clearForClock() {
-  var gpsOn = false
-  clearInterval(myTimer);
-  dots.forEach(function(dot) {
-    dot.style.visibility = "hidden";
-  });
-  displays.forEach(function(display) {
-    display.style.visibility = "hidden";
-  });
-  mainClock.forEach(function(display) {
-    display.style.visibility = "visible";
-  });
-  // mainClock.style.visibility = "visible";
-  smallClock.style.visibility = "hidden";
-  // displayData0.text = ``;
-  // displayData1.text = ``;
-  // displayData2.text = ``;
-  label.text = ``;
+// Listen for messages from the companion
+messaging.peerSocket.onmessage = function(evt) {
+  if (evt.data) {
+    var today = new Date()
+    fs.writeFileSync("msgTides.txt", JSON.stringify(evt.data), "utf-8");
+  }
 }
 
-/////////////////////////////////////////////////////////////////////
+// Listen for the onerror event
+messaging.peerSocket.onerror = function(err) {
+  // Handle any errors
+  console.log("Connection error: " + err.code + " - " + err.message);
+}
+
+// do something with them
+function processTideData(data) {
+  console.log("The tide array is: " + data);
+  fs.writeFileSync("tides.txt", JSON.stringify(data), "utf-8");
+}
+
